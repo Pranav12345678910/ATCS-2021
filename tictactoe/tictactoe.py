@@ -75,8 +75,9 @@ class TicTacToe:
         return 
 
     def take_minimax_turn(self, player):
-        row = int(self.minimax(player)[1])
-        col = int(self.minimax(player)[2])
+        results = self.minimax(player, 3)
+        row = int(results[1])
+        col = int(results[2])
         self.place_player(player, row, col)
 
     def check_col_win(self, player):
@@ -152,14 +153,14 @@ class TicTacToe:
             return True
         return False
 
-    def minimax(self, player):
+    def minimax(self, player, depth):
         opt_row = -1 
         opt_col = -1
-        if self.check_win('O'):
+        if self.check_win('O') or (depth == 0):
             return (10, None, None)
-        if self.check_win('X'):
+        if self.check_win('X') or (depth == 0):
             return (-10, None, None)
-        if self.check_tie():
+        if self.check_tie() or (depth == 0):
             return (0, None, None)
         if player == 'O':
             best = -100
@@ -167,7 +168,7 @@ class TicTacToe:
                 for col in range(len(self.board)):
                     if self.is_valid_move(int(row), int(col)):
                         self.place_player('O', int(row), int(col))
-                        score = self.minimax('X')[0]
+                        score = self.minimax('X', depth - 1)[0]
                         self.place_player('-', int(row), int(col))
                         if best < score:
                             best = score
@@ -180,7 +181,7 @@ class TicTacToe:
                 for col in range(len(self.board)):
                     if self.is_valid_move(int(row), int(col)):
                         self.place_player('X', int(row), int(col))
-                        score = self.minimax('O')[0]
+                        score = self.minimax('O', depth - 1)[0]
                         self.place_player('-', int(row), int(col))
                         if worst > score:
                             worst = score
