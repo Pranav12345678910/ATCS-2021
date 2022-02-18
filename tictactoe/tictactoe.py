@@ -1,3 +1,4 @@
+from calendar import c
 import random
 
 
@@ -33,14 +34,13 @@ class TicTacToe:
         #if it is actually inside the 3x3 grid
         if (row >= 0 and row <= 2) and (col >= 0 and col <= 2):
             #if the tile is not already occupied
-            if self.board[row][col] != 'X' or self.board[row][col] != 'Y':
+            if self.board[row][col] != 'X' and self.board[row][col] != 'O':
                 return True
         return False
 
     def place_player(self, player, row, col):
         # TODO: Place the player on the board
-        if self.board[row][col] == '-':
-            self.board[row][col] = player
+        self.board[row][col] = player
         return
 
     def take_manual_turn(self, player):
@@ -61,7 +61,7 @@ class TicTacToe:
         if player == 'X':
             self.take_manual_turn(player)
         if player == 'O':
-            self.take_random_turn(player)
+            self.take_minimax_turn(player)
         return
 
     def take_random_turn(self, player):
@@ -73,6 +73,11 @@ class TicTacToe:
             col = random.choice(cool_list)
         self.place_player(player, row, col)
         return 
+
+    def take_minimax_turn(self, player):
+        row = int(self.minimax(player)[1])
+        col = int(self.minimax(player)[2])
+        self.place_player(player, row, col)
 
     def check_col_win(self, player):
         # TODO: Check col win
@@ -126,20 +131,63 @@ class TicTacToe:
 
     def check_win(self, player):
         # TODO: Check 
-        if self.check_col_win(player) == True or self.check_diag_win(player) == True or self.check_row_win(player) == True:
+        if self.check_col_win(player) == True: 
             return True
-        #return False
+        if self.check_diag_win(player) == True:
+            return True 
+        if self.check_row_win(player) == True:
+            return True
+        return False
 
     def check_tie(self):
         # TODO: Check tie
-        num_taken = 0
+        num_occupied = 0
         for x in range(len(self.board)):
             for y in range(len(self.board[x])):  
                 if self.board[x][y] != '-':
-                    num_taken += 1
-        if num_taken == 9 and self.check_win('X') == False and self.check_win('O') == False:
+                    num_occupied += 1
+        xwin = self.check_win('X')
+        owin = self.check_win('O')
+        if num_occupied == 9 and xwin == False and owin == False:
             return True
         return False
+
+    def minimax(self, player):
+        opt_row = -1 
+        opt_col = -1
+        if self.check_win('O'):
+            return (10, None, None)
+        if self.check_win('X'):
+            return (-10, None, None)
+        if self.check_tie():
+            return (0, None, None)
+        if player == 'O':
+            best = -100
+            for row in range(len(self.board)):
+                for col in range(len(self.board)):
+                    if self.is_valid_move(int(row), int(col)):
+                        self.place_player('O', int(row), int(col))
+                        score = self.minimax('X')[0]
+                        self.place_player('-', int(row), int(col))
+                        if best < score:
+                            best = score
+                            opt_row = int(row)
+                            opt_col = int(col)
+            return (best, opt_row, opt_col)
+        if player == 'X':
+            worst = 100
+            for row  in range(len(self.board)):
+                for col in range(len(self.board)):
+                    if self.is_valid_move(int(row), int(col)):
+                        self.place_player('X', int(row), int(col))
+                        score = self.minimax('O')[0]
+                        self.place_player('-', int(row), int(col))
+                        if worst > score:
+                            worst = score
+                            opt_row = int(row)
+                            opt_col = int(col)
+            return (worst, opt_row, opt_col)
+            
 
     def play_game(self):
         #TODO: Play game
@@ -150,6 +198,9 @@ class TicTacToe:
             self.take_turn(player)
             if self.check_win(player) == True:
                 print(player + " Wins!")
+                break
+            if self.check_tie() == True:
+                print("Tie!")
                 break
             if player == 'X':
                 player = 'O'
