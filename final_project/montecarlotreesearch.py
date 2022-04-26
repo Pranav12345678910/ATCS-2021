@@ -152,9 +152,17 @@ class TicTacToe:
         return False
 
     def montecarlo(self, player):
-        opt_row = -1 
-        opt_col = -1
-        return (worst, opt_row, opt_col)
+        #while (program has time):
+            #select a node 
+
+            #if that node does not end game:
+                #expand node (find all children and select one randomly)
+
+            #make a new node variable and set it equal to one of the children of the old node randomly
+            
+
+
+        return (opt_row, opt_col)
             
 
     def play_game(self):
