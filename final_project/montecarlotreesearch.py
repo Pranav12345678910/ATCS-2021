@@ -151,17 +151,24 @@ class TicTacToe:
             return True
         return False
 
-    def montecarlo(self, player):
+    def montecarlo(self, current_state, player):
+        #make a new tree
+        #make a new root node 
+        #set the root node to the current state
+        #set the value of the opponent
+
         #while (program has time):
-            #select a node 
+            #select a node by running selection function
 
             #if that node does not end game:
-                #expand node (find all children and select one randomly)
+                #expand node (find all children)
 
-            #make a new node variable and set it equal to one of the children of the old node randomly
-            
-
-
+            #make a new node variable and set it equal to one of the children of the old node randomly, only if it has children
+        
+            #simulate, store results in a variable, and backpropagate 
+        
+        #winner = root child with max score
+        #return board
         return (opt_row, opt_col)
             
 
