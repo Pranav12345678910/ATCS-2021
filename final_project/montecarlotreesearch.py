@@ -151,26 +151,39 @@ class TicTacToe:
             return True
         return False
 
+    def find_best_ucb(node):
+        parent_visit_count = number of times node has been visited
+        create the array child_ucb = [] #the 1st index will be the UCB value of the 1st child node, 2nd index will be the UCB value of the 2nd child node, etc  
+        get max index of the child_ucb array
+        return node.childarray[max index]
+
+    def selection(root_node):
+        node = root_node
+        while node has children:
+            node = find_best_ucb(node)
+        return node
+
     def montecarlo(self, current_state, player):
-        #make a new tree
-        #make a new root node 
-        #set the root node to the current state
-        #set the value of the opponent
+        #opponent = 1 - player
+        #tree = new tree()
+        #root_node = tree.root
+        #root_node.state = current_state
 
         #while (program has time):
-            #select a node by running selection function
+            #new_node = selection(root_node)
 
-            #if that node does not end game:
-                #expand node (find all children)
+            #if that new_node.status = IN_PROGRESS:
+                #expand_node(new_node) find all children
 
-            #make a new node variable and set it equal to one of the children of the old node randomly, only if it has children
+            #node_to_explore = new_node
+            #if node_to_explore has children
+                #node_to_explore = new_node.get_random_child()
         
-            #simulate, store results in a variable, and backpropagate 
+            #result = random_simulation(node_to_explore, opponent)
+            #backpropagate(node_to_explore, result) 
         
         #winner = root child with max score
         #return board
-        return (opt_row, opt_col)
-            
 
     def play_game(self):
         #TODO: Play game
