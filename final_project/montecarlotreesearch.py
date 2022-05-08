@@ -88,31 +88,36 @@ class state:
     def __init__(self, board, state):
         if board != None and state == None: #if they have only have a board for the node
             self.player_number = None
-            self.board = new Board(board)
+            self.board = Board(board)
             self.num_wins = 10
             self.visit_count = 0    
         elif board != None and state != None: #if they want to clone a state
             self.player_number = state.player_number
-            self.board = new Board(board)
+            self.board = Board(board)
             self.num_wins = state.num_wins
             self.visit_count = state.visit_count
         else: #if I have no info and just want to make a new state
-            self.board = new Board()
+            self.board = Board()
             self.player_number = None
             self.num_wins = 10
             self.visit_count = 0
+
+        def find_opposite_player():
+            if self.player_number == 'X':
+                return 'Y'
+            return 'X'
 
         def compute_neighbors():
             available_spots = self.board.find_empty_spaces()
             neighboring_states = []
             for x in available_spots:
                 temp_board = board()
-                temp_board.board_values = 
-            #make a for loop where you loop through that list, and for each iteration:
-                #set the player number of that state to be the opposite of this states player number 
-                #change the board to reflect the move's execution
-                #append the new state to the list neighboring states
+                temp_board.board_values[x[0],x[1]] = self.find_opposite_player()
+                temp_state = state(temp_board)
+                neighboring_states.append(temp_state)
+            return neighboring_states
 
+            
 #keeps track of the state
 class node:
     def __init__(self, state, node):
@@ -135,8 +140,8 @@ class node:
 #used to create nodes
 class Tree:
     def __init__(self, new_node):
-        if node = None:
-            self.root = new node(None, None)
+        if new_node = None:
+            self.root = node(None, None)
         else:
             self.root = new_node
 
@@ -157,21 +162,37 @@ def find_best_ucb(node):
 
 def selection(root_node):
     #starts as root node
-    node = root_node
+    child_node = root_node
     while len(node.child_array) > 0:
         #takes on value of best child node of node that was passed into function
-        node = find_best_ucb(node)
+        chiild_node = find_best_ucb(node)
     return node
 
 #all this function does is fill up the child_array function in the node class, unless 
-#the node represents a win, loss, or tie (basically unless the game has ended)
-def expand_node(node):
+#the node represents a win, loss, or tie 
+def expand_node(node_to_expand):
     #this function gets all the possible outcomes from node 
     neighboring_nodes = node.state.compute_neighbors()
+    #x represents one of the potential states we can get from the node that was passed in
+    #already have neighboring states, only need to convert them into nodes and add them to node_to_expand's child array
+    for x in neighboring_nodes:
+        temp_node = node(x)
+        temp_node.parent_node = node_to_expand
+        temp_node.state.player_number = temp_node.state.find_opposite_player()
+        node_to_expand.child_array.append(temp_node)
     
+#same function as before but need it to be outside of state class as well
+def find_opposite_player_2(player):
+    if player == 'X':
+        return 'Y'
+    return 'X'
+
+def random_simulation():
+    
+
 def montecarlo(self, board, player):
     #1 represents either X or O and 0 represents the other
-    opponent = 1 - player
+    opponent = find_opposite_player_2(player)
     tree = new Tree()
     root_node = tree.root
     root_node.state.board = board #in his code he did new Board(board) instead. I don't know if it matters
