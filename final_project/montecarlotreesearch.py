@@ -2,6 +2,9 @@ import copy
 import time
 import random
 
+'''
+Article that I adapted pseudocode/general approach from: https://medium.com/swlh/tic-tac-toe-at-the-monte-carlo-a5e0394c7bc2
+'''
 #keeps track of size of board, what pieces have been played, game status
 class board:
     def __init__(self, board): 
@@ -78,8 +81,20 @@ class board:
             return (True, player)
         return (False, player)
     
+    def check_tie():
+        for x in self.board_values:
+            for y in x:
+                if y == 0:
+                    return False
+        return True
+
     def take_manual_turn(player):
-        
+        row = -1
+        col = -1
+        while (row < 1 and row > 2) and (col < 1 and col > 2):
+            row = input("What row do you want to insert your player in? Input an integer from 0 - 2")
+            col = input("What col do you want to insert your player in? Input an integer from 0 - 2")
+        return (row, col)
 
 #keeps track of current player, board, score of the node, win score of node 
 class state:
@@ -237,12 +252,13 @@ def backpropagate(node_to_explore, winning_player):
             temp_node.state.num_wins += 10
         temp_node = temp_node.parent_node
 
+#returns a new game board
 def montecarlo(board, player):
     #1 represents either X or O and 0 represents the other
     opponent = find_opposite_player_2(player)
     tree = Tree()
     root_node = tree.root
-    root_node.state.board = board #in his code he did new Board(board) instead. I don't know if it matters
+    root_node.state.board = board 
     root_node.state.player = opponent 
 
     now = time.time()
@@ -287,41 +303,53 @@ def print_board():
         count += 1
     return
 
+#finds differences 
+def find_montecarlo_turn(old_board, player):
+    new_board = montecarlo(old_board, player)
+    coords_and_player = []
+    for x in range(len(old_board)):
+        for y in range(len(old_board)):
+            if old_board[x][y] != new_board[x][y]:
+                coords_and_player.append((x,y))
+                coords_and_player.append(player)
+    return tuple(coords_and_player)
+    
+
 def play_game():
     #TODO: Play game
-    player1 = 'X'
-    player2 = 'O'
+    current_player = 'X'
     game_board = board()
     print_instructions()
     while True:
         print_board()   
-        game_board = \ 
-        game_board = montecarlo(game_board, )
-        if self.check_win(player) == True:
-            print(player + " Wins!")
+        if current_player == 'X':
+            #the move is a tuple that contains two elements: a 2 element long tuple of coordinates, and the player
+            move = find_montecarlo_turn(game_board, 'X')
+            row = move[0][0]
+            col = move[0][1]
+            game_board.board_values[row, col] = move[1]
+            #take random turn gets input fromn the user of an unoccupied row and col and puts the player there
+            game_board.take_manual_turn('Y')
+        else:
+            #the move is a tuple that contains two elements: a 2 element long list of coordinates, and the player
+            move = find_montecarlo_turn(game_board, 'Y')
+            row = move[0][0]
+            col = move[0][1]
+            game_board.board_values[row, col] = move[1]
+            game_board.take_random_turn('X')
+        if game_board.check_win(current_player) == True:
+            print(current_player + " Wins!")
             break
-        if self.check_tie() == True:
+        #check tie simply checks if every tile is occupied, so checking win first is necessary
+        if game_board.check_tie() == True:
             print("Tie!")
             break
-        if player == 'X':
-            player = 'O'
+        if current_player == 'X':
+            current_player = 'O'
         else:
-            player = 'X'
+            current_player = 'X'
     return  
 
-'''
-let simulateAiPlay = () => {
-  let board = new Board();
-  let player = 1;
-  let totalMoves = 9;
-  for (var i = 0; i < 9; i++) {
-    board = mcts.findNextMove(board, player);
-    if (board.checkStatus() !== -1) {
-      break;
-    }
-    player = 3 - player;
-  }
-  let winStatus = board.checkStatus();
-  return winStatus;
-}
-'''
+
+    #what I just did: finished find_montecarlo_turn function and called it in play_game 
+    #next step: update game_board variable based on move variable, and then finish the rest of the play_game function
