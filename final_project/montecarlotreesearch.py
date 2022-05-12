@@ -317,10 +317,7 @@ def montecarlo(game_board, player):
             node_to_explore = new_node.pick_random_child()
     
         result = random_simulation(node_to_explore, opponent)
-        #print(result)
         backpropagate(node_to_explore, result) 
-        print(node_to_explore.a_state.num_wins)
-        print(node_to_explore.a_state.visit_count)
     
     #find child of root node that has the highest visit count, because that has the highest chance of being a good move
     chosen_node = root_node.find_highest_visit_count()
@@ -329,7 +326,7 @@ def montecarlo(game_board, player):
 
 def print_instructions():
         # TODO: Print the instructions to the game
-        print("Player 1 is X and Player 2 is O")
+        print("The bot is X and you are O")
         print("The first player to get three in a row of their tile wins. The number 0 signifies a blank tile")
         return
 
@@ -373,9 +370,7 @@ def play_game():
             row = move[0][0]
             col = move[0][1]
             game_board.board_values[row][col] = move[1]
-            #print(str(game_board.board_values) + '2')
             #take random turn gets input fromn the user of an unoccupied row and col and puts the player there
-            #game_board.take_manual_turn()
         else:
             user_coords = game_board.take_manual_turn()
             row_2 = user_coords[0]
@@ -383,12 +378,12 @@ def play_game():
             
             game_board.board_values[row_2][col_2] = 'Y'
         if game_board.check_win(current_player)[0] == True:
-            print(game_board.board_values)
+            print_board(game_board)
             print(current_player + " Wins!")
             break
         if game_board.check_win(find_opposite_player_2(current_player))[0] == True:
-            print(game_board.board_values)
-            print(find_opposite_player_2(current_player) + "Wins!")
+            print_board(game_board)
+            print(find_opposite_player_2(current_player) + " Wins!")
         #check tie simply checks if every tile is occupied, so checking win first is necessary
         if game_board.check_tie() == True:
             print("Tie!")
@@ -401,12 +396,6 @@ def play_game():
 
 play_game()
 
-
-'''
-test_board = board()
-test_board.board_values = [['X', 'X', 'X'],['Y', 0, 'Y'],[0, 'Y', 0]]
-print(test_board.check_win('X'), test_board.check_diag_win('X'), test_board.check_col_win('X'), test_board.check_row_win('X'))
-'''
 
 #To - Do: Fix check_win
 
