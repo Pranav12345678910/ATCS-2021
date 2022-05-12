@@ -326,7 +326,7 @@ def montecarlo(game_board, player):
 
 def print_instructions():
         # TODO: Print the instructions to the game
-        print("The bot is X and you are O")
+        print("The bot is X and you are Y")
         print("The first player to get three in a row of their tile wins. The number 0 signifies a blank tile")
         return
 
@@ -384,6 +384,7 @@ def play_game():
         if game_board.check_win(find_opposite_player_2(current_player))[0] == True:
             print_board(game_board)
             print(find_opposite_player_2(current_player) + " Wins!")
+            break
         #check tie simply checks if every tile is occupied, so checking win first is necessary
         if game_board.check_tie() == True:
             print("Tie!")
